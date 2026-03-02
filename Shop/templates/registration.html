@@ -6,7 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Registration</h1>
-    
+    <h1>Регистрация пользователя</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Имя пользователя:</label>
+        <input type="text" name="username" required><br>
+        <label for="password">Пароль:</label>
+        <input type="password" name="password" required><br>
+        <label for="phone">Телефон:</label>
+        <input type="text" name="phone"><br>
+        <label for="address">Адрес:</label>
+        <input type="text" name="address"><br>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
 </body>
 </html>
