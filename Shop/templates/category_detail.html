@@ -1,11 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Каталог товаров{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="{% url 'catalog' %}">Каталог</a> / 
+        <a href="{% url 'categories_list' %}">Категории</a> / 
+        <strong>{{ category.name }}</strong>
+    </div>
+{% endblock %}
 
 {% block content %}
-    <h2>📦 Каталог товаров</h2>
+    <h2>📂 {{ category.name }}</h2>
     
-    <p>Всего товаров: <strong>{{ products.count }}</strong></p>
+    {% if category.description %}
+        <p style="color: #666; font-style: italic;">{{ category.description }}</p>
+    {% endif %}
+    
+    <p>Товаров в категории: <strong>{{ products.count }}</strong></p>
     
     <div class="product-grid">
         {% for product in products %}
@@ -20,11 +32,10 @@
                         <span class="badge badge-danger">Нет в наличии</span>
                     {% endif %}
                 </div>
-                <p><small>Категория: {{ product.category.name }}</small></p>
                 <a href="{% url 'product_detail' product_slug=product.slug %}" class="btn btn-small">Просмотр</a>
             </div>
         {% empty %}
-            <p>Товаров не найдено.</p>
+            <p>В этой категории нет активных товаров.</p>
         {% endfor %}
     </div>
 {% endblock %}

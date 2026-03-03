@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="{% url 'catalog' %}">Каталог</a> / 
+        <a href="{% url 'product_detail' product_slug=product.slug %}">{{ product.name }}</a> / 
+        <strong>Отзывы</strong>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h2>⭐ Отзывы на товар: {{ product.name }}</h2>
+    
+    <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="margin-top: 0;">{{ product.name }}</h3>
+        <p style="color: #666;">Цена: <strong>₽ {{ product.price }}</strong></p>
+        <a href="{% url 'product_detail' product_slug=product.slug %}" class="btn btn-small">← Вернуться к товару</a>
+    </div>
+    
+    <h3>Всего отзывов: {{ reviews.count }}</h3>
+    
+    {% if reviews %}
+        <div style="display: grid; gap: 20px;">
+            {% for review in reviews %}
+                <div style="background: white; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">{{ review.title }}</h4>
+                            <p style="margin: 0; color: #666;">
+                                <strong>{{ review.user.username }}</strong>
+                                {% if review.is_verified_purchase %}
+                                    <span class="badge badge-success" style="margin-left: 10px;">✓ Проверенная покупка</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <span class="rating" style="font-size: 18px;">{{ review.get_rating_display }}</span>
+                    </div>
+                    
+                    <p style="line-height: 1.6; margin: 15px 0;">{{ review.text }}</p>
+                    
+                    <div style="color: #999; font-size: 12px;">
+                        📅 {{ review.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #999; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+            Пока нет отзывов об этом товаре. Будьте первым, кто оставит отзыв!
+        </p>
+    {% endif %}
+{% endblock %}

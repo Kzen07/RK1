@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="{% url 'catalog' %}">Каталог</a> / 
+        <strong>Категории</strong>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h2>📂 Все категории</h2>
+    
+    <p>Доступно категорий: <strong>{{ categories.count }}</strong></p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+        {% for category in categories %}
+            <div class="product-card" style="text-align: center;">
+                <div style="font-size: 40px; margin: 20px 0;">📦</div>
+                <h3>{{ category.name }}</h3>
+                
+                {% if category.description %}
+                    <p style="color: #666; font-size: 14px;">{{ category.description|truncatewords:15 }}</p>
+                {% endif %}
+                
+                <p style="color: #999; margin: 10px 0;">
+                    <strong>Товаров: {{ category.products.count }}</strong>
+                </p>
+                
+                <a href="{% url 'category_detail' category_slug=category.slug %}" class="btn btn-small">Смотреть товары</a>
+            </div>
+        {% empty %}
+            <p>Категории не найдены.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

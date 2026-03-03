@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="{% url 'catalog' %}">Каталог</a> / 
+        <a href="{% url 'user_orders' user_id=order.user.id %}">Заказы</a> / 
+        <strong>Заказ #{{ order.id }}</strong>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h2>🛒 Деталь заказа #{{ order.id }}</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0;">
+        <div>
+            <div style="background: #f0f4ff; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top: 0;">Информация заказа</h3>
+                
+                <p>
+                    <strong>Заказчик:</strong> {{ order.user.username }}
+                </p>
+                
+                <p>
+                    <strong>Дата заказа:</strong> {{ order.created_at|date:"d.m.Y H:i" }}
+                </p>
+                
+                <p>
+                    <strong>Статус:</strong>
+                    {% if order.status == 'pending' %}
+                        <span class="badge">⏳ В ожидании</span>
+                    {% elif order.status == 'processing' %}
+                        <span class="badge">🔄 Обработка</span>
+                    {% elif order.status == 'shipped' %}
+                        <span class="badge" style="background: #2196f3;">📦 Отправлено</span>
+                    {% elif order.status == 'delivered' %}
+                        <span class="badge badge-success">✓ Доставлено</span>
+                    {% else %}
+                        <span class="badge badge-danger">✗ Отменено</span>
+                    {% endif %}
+                </p>
+                
+                <p>
+                    <strong>Статус оплаты:</strong>
+                    {% if order.is_paid %}
+                        <span class="badge badge-success">✓ Оплачено</span>
+                    {% else %}
+                        <span class="badge badge-danger">✗ Не оплачено</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <div>
+            <div style="background: #fff3e0; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top: 0;">Итого</h3>
+                
+                <table style="width: 100%; margin-bottom: 15px;">
+                    <tr>
+                        <td><strong>Сумма товаров:</strong></td>
+                        <td style="text-align: right;">₽ {{ order.total_price }}</td>
+                    </tr>
+                    <tr style="background: #ffe0b2;">
+                        <td><strong style="font-size: 18px;">Итого:</strong></td>
+                        <td style="text-align: right; font-size: 18px;"><strong>₽ {{ order.total_price }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <h3>📦 Товары в заказе</h3>
+    
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена за шт.</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'product_detail' product_slug=item.product.slug %}">
+                                {{ item.product.name }}
+                            </a>
+                        </td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td>₽ {{ item.price }}</td>
+                        <td><strong>₽ {{ item.get_subtotal }}</strong></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Нет товаров в заказе.</p>
+    {% endif %}
+{% endblock %}
