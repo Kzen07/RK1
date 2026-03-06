@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='Shop.category')),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='shop.category')),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -75,8 +75,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.IntegerField()),
                 ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='Shop.order')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Shop.product')),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='shop.order')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop.product')),
             ],
         ),
         migrations.CreateModel(
@@ -84,14 +84,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.IntegerField(default=1)),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='Shop.cart')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Shop.product')),
+                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='shop.cart')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop.product')),
             ],
         ),
         migrations.AddField(
             model_name='cart',
             name='products',
-            field=models.ManyToManyField(related_name='carts', through='Shop.CartItem', to='Shop.product'),
+            field=models.ManyToManyField(related_name='carts', through='shop.CartItem', to='shop.product'),
         ),
         migrations.CreateModel(
             name='UserProfile',
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('products', models.ManyToManyField(related_name='wishlists', to='Shop.product')),
+                ('products', models.ManyToManyField(related_name='wishlists', to='shop.product')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='wishlist', to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(blank=True, null=True)),
                 ('is_verified_purchase', models.BooleanField(default=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='Shop.product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='shop.product')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to=settings.AUTH_USER_MODEL)),
             ],
             options={
