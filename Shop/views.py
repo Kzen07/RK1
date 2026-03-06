@@ -112,11 +112,11 @@ def product_reviews(request, product_id):
 def cart_view(request):
 	if not request.user.is_authenticated:
 		return redirect('login')
-	
-	cart, created = Cart.objects.get_or_create(user=request.user)
-	items = cart.items.all()
+
+	cart, _ = Cart.objects.get_or_create(user=request.user)
+	items = cart.items.select_related('product').all()
 	total = cart.get_total()
-	
+
 	context = {
 		'cart': cart,
 		'items': items,
@@ -124,6 +124,43 @@ def cart_view(request):
 		'page_title': 'Корзина'
 	}
 	return render(request, 'cart.html', context)
+
+
+def add_to_cart(request, product_id):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	product = get_object_or_404(Product, id=product_id)
+	cart, _ = Cart.objects.get_or_create(user=request.user)
+	item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+	if not created:
+		item.quantity += 1
+		item.save()
+
+	return redirect('cart')
+
+
+def remove_from_cart(request, item_id):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+	item.delete()
+	return redirect('cart')
+
+
+def update_cart(request, item_id):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+	quantity = int(request.POST.get('quantity', 1))
+	if quantity < 1:
+		item.delete()
+	else:
+		item.quantity = quantity
+		item.save()
+	return redirect('cart')
 
 
 def login_view(request):
