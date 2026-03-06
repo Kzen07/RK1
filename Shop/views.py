@@ -32,10 +32,18 @@ def product_detail(request, product_slug):
 	product = get_object_or_404(Product, slug=product_slug)
 	reviews = product.reviews.all()
 	average_rating = sum(r.rating for r in reviews) / len(reviews) if reviews else 0
+
+	in_wishlist = False
+	if request.user.is_authenticated:
+		wishlist = Wishlist.objects.filter(user=request.user).first()
+		if wishlist:
+			in_wishlist = wishlist.products.filter(id=product.id).exists()
+
 	context = {
 		'product': product,
 		'reviews': reviews,
 		'average_rating': average_rating,
+		'in_wishlist': in_wishlist,
 		'page_title': product.name
 	}
 	return render(request, 'product_detail.html', context)
@@ -161,6 +169,26 @@ def update_cart(request, item_id):
 		item.quantity = quantity
 		item.save()
 	return redirect('cart')
+
+
+def add_to_wishlist(request, product_id):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	product = get_object_or_404(Product, id=product_id)
+	wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+	wishlist.products.add(product)
+	return redirect('product_detail', product_slug=product.slug)
+
+
+def remove_from_wishlist(request, product_id):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	product = get_object_or_404(Product, id=product_id)
+	wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+	wishlist.products.remove(product)
+	return redirect('user_profile', user_id=request.user.id)
 
 
 def checkout_view(request):

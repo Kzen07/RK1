@@ -70,6 +70,20 @@
                         <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Добавить в корзину</button>
                     </form>
                 {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% if in_wishlist %}
+                        <form method="POST" action="{% url 'remove_from_wishlist' product_id=product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 10px; background: #f44336;">❤️ Убрать из избранного</button>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="{% url 'add_to_wishlist' product_id=product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 10px; background: #9c27b0;">🤍 В избранное</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
