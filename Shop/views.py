@@ -75,9 +75,35 @@ def catalog_view(request):
 def product_reviews(request, product_id):
 	product = get_object_or_404(Product, id=product_id)
 	reviews = product.reviews.all()
+
+	error = None
+	if request.method == 'POST':
+		if not request.user.is_authenticated:
+			return redirect('registration')
+
+		if Review.objects.filter(product=product, user=request.user).exists():
+			error = 'Вы уже оставляли отзыв на этот товар.'
+		else:
+			rating = request.POST.get('rating')
+			title = request.POST.get('title', '').strip()
+			text = request.POST.get('text', '').strip()
+
+			if not rating or not title:
+				error = 'Заполните оценку и заголовок.'
+			else:
+				Review.objects.create(
+					product=product,
+					user=request.user,
+					rating=int(rating),
+					title=title,
+					text=text,
+				)
+				return redirect('product_reviews', product_id=product_id)
+
 	context = {
 		'product': product,
 		'reviews': reviews,
+		'error': error,
 		'page_title': f'Отзывы на {product.name}'
 	}
 	return render(request, 'product_reviews.html', context)

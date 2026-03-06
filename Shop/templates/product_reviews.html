@@ -4,23 +4,66 @@
 
 {% block breadcrumb %}
     <div class="breadcrumb">
-        <a href="{% url 'catalog' %}">Каталог</a> / 
-        <a href="{% url 'product_detail' product_slug=product.slug %}">{{ product.name }}</a> / 
+        <a href="{% url 'catalog' %}">Каталог</a> /
+        <a href="{% url 'product_detail' product_slug=product.slug %}">{{ product.name }}</a> /
         <strong>Отзывы</strong>
     </div>
 {% endblock %}
 
 {% block content %}
     <h2>⭐ Отзывы на товар: {{ product.name }}</h2>
-    
+
     <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
         <h3 style="margin-top: 0;">{{ product.name }}</h3>
         <p style="color: #666;">Цена: <strong>₽ {{ product.price }}</strong></p>
         <a href="{% url 'product_detail' product_slug=product.slug %}" class="btn btn-small">← Вернуться к товару</a>
     </div>
-    
+
+    {% if user.is_authenticated %}
+        {% if error %}
+            <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+        {% else %}
+            <div style="background: #f0f4ff; border: 1px solid #c7d7ff; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+                <h3 style="margin-top: 0;">Оставить отзыв</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: bold;">Оценка *</label>
+                        <select name="rating" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">— выберите —</option>
+                            <option value="5">⭐⭐⭐⭐⭐ Отлично</option>
+                            <option value="4">⭐⭐⭐⭐ Хорошо</option>
+                            <option value="3">⭐⭐⭐ Нормально</option>
+                            <option value="2">⭐⭐ Плохо</option>
+                            <option value="1">⭐ Ужасно</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: bold;">Заголовок *</label>
+                        <input type="text" name="title" required maxlength="200"
+                               style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;"
+                               placeholder="Кратко о впечатлении">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: bold;">Текст отзыва</label>
+                        <textarea name="text" rows="4"
+                                  style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical;"
+                                  placeholder="Подробнее о товаре..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Отправить отзыв</button>
+                </form>
+            </div>
+        {% endif %}
+    {% else %}
+        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 30px;">
+            <a href="{% url 'registration' %}">Войдите</a>, чтобы оставить отзыв.
+        </div>
+    {% endif %}
+
     <h3>Всего отзывов: {{ reviews.count }}</h3>
-    
+
     {% if reviews %}
         <div style="display: grid; gap: 20px;">
             {% for review in reviews %}
@@ -37,9 +80,9 @@
                         </div>
                         <span class="rating" style="font-size: 18px;">{{ review.get_rating_display }}</span>
                     </div>
-                    
+
                     <p style="line-height: 1.6; margin: 15px 0;">{{ review.text }}</p>
-                    
+
                     <div style="color: #999; font-size: 12px;">
                         📅 {{ review.created_at|date:"d.m.Y H:i" }}
                     </div>

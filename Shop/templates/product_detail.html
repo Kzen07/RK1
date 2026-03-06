@@ -74,8 +74,11 @@
     <h3>Описание</h3>
     <p style="line-height: 1.6;">{{ product.description }}</p>
     
-    <h3>↩️ Отзывы ({{ reviews.count }})</h3>
-    
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>↩️ Отзывы ({{ reviews.count }})</h3>
+        <a href="{% url 'product_reviews' product_id=product.id %}" class="btn btn-small">Написать отзыв</a>
+    </div>
+
     {% if reviews %}
         <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
             {% for review in reviews %}
@@ -98,6 +101,6 @@
             {% endfor %}
         </div>
     {% else %}
-        <p style="color: #999;">Пока нет отзывов. Будьте первым!</p>
+        <p style="color: #999;">Пока нет отзывов. <a href="{% url 'product_reviews' product_id=product.id %}">Будьте первым!</a></p>
     {% endif %}
 {% endblock %}
