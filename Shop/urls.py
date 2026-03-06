@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     # Основные страницы
     path('', views.catalog_view, name='catalog'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('registration/', views.registration_view, name='registration'),
     path('cart/', views.cart_view, name='cart'),
     

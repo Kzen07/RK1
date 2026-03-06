@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import (
 	UserProfile, Product, Category, Order, OrderItem, 
 	Review, Cart, CartItem, Wishlist
@@ -79,7 +79,7 @@ def product_reviews(request, product_id):
 	error = None
 	if request.method == 'POST':
 		if not request.user.is_authenticated:
-			return redirect('registration')
+			return redirect('login')
 
 		if Review.objects.filter(product=product, user=request.user).exists():
 			error = 'Вы уже оставляли отзыв на этот товар.'
@@ -124,6 +124,29 @@ def cart_view(request):
 		'page_title': 'Корзина'
 	}
 	return render(request, 'cart.html', context)
+
+
+def login_view(request):
+	if request.user.is_authenticated:
+		return redirect('catalog')
+
+	error = None
+	if request.method == 'POST':
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		user = authenticate(request, username=username, password=password)
+		if user is not None:
+			login(request, user)
+			return redirect(request.POST.get('next') or 'catalog')
+		else:
+			error = 'Неверный логин или пароль.'
+
+	return render(request, 'login.html', {'error': error, 'next': request.GET.get('next', '')})
+
+
+def logout_view(request):
+	logout(request)
+	return redirect('catalog')
 
 
 def registration_view(request):
