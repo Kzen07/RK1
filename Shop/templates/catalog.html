@@ -12,7 +12,7 @@
             <div class="product-card">
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.description|truncatewords:10 }}</p>
-                <div class="product-price">₽ {{ product.price }}</div>
+                <div class="product-price">₸ {{ product.price }}</div>
                 <div class="product-stock">
                     {% if product.stock > 0 %}
                         <span class="badge badge-success">В наличии: {{ product.stock }}</span>

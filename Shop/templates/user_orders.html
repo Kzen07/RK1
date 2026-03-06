@@ -3,64 +3,64 @@
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block breadcrumb %}
-    <div class="breadcrumb">
-        <a href="{% url 'catalog' %}">Каталог</a> / 
-        <a href="{% url 'user_profile' user_id=user.id %}">Профиль</a> / 
-        <strong>Мои заказы</strong>
-    </div>
+<div class="breadcrumb">
+    <a href="{% url 'catalog' %}">Каталог</a> /
+    <a href="{% url 'user_profile' user_id=user.id %}">Профиль</a> /
+    <strong>Мои заказы</strong>
+</div>
 {% endblock %}
 
 {% block content %}
-    <h2>📋 Заказы пользователя: {{ user.username }}</h2>
-    
-    <p>Всего заказов: <strong>{{ orders.count }}</strong></p>
-    
-    {% if orders %}
-        <table>
-            <thead>
-                <tr>
-                    <th>ID заказа</th>
-                    <th>Дата</th>
-                    <th>Статус</th>
-                    <th>Сумма</th>
-                    <th>Оплачено</th>
-                    <th>Действие</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                    <tr>
-                        <td><strong>#{{ order.id }}</strong></td>
-                        <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
-                        <td>
-                            {% if order.status == 'pending' %}
-                                <span class="badge">⏳ В ожидании</span>
-                            {% elif order.status == 'processing' %}
-                                <span class="badge">🔄 Обработка</span>
-                            {% elif order.status == 'shipped' %}
-                                <span class="badge" style="background: #2196f3;">📦 Отправлено</span>
-                            {% elif order.status == 'delivered' %}
-                                <span class="badge badge-success">✓ Доставлено</span>
-                            {% else %}
-                                <span class="badge badge-danger">✗ Отменено</span>
-                            {% endif %}
-                        </td>
-                        <td>₽ {{ order.total_price }}</td>
-                        <td>
-                            {% if order.is_paid %}
-                                <span class="badge badge-success">✓ Да</span>
-                            {% else %}
-                                <span class="badge badge-danger">✗ Нет</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'order_detail' order_id=order.id %}" class="btn btn-small">Просмотр</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p style="color: #999;">У вас нет заказов.</p>
-    {% endif %}
+<h2>📋 Заказы пользователя: {{ user.username }}</h2>
+
+<p>Всего заказов: <strong>{{ orders.count }}</strong></p>
+
+{% if orders %}
+<table>
+    <thead>
+        <tr>
+            <th>ID заказа</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>Сумма</th>
+            <th>Оплачено</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td><strong>#{{ order.id }}</strong></td>
+            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                {% if order.status == 'pending' %}
+                <span class="badge">⏳ В ожидании</span>
+                {% elif order.status == 'processing' %}
+                <span class="badge">🔄 Обработка</span>
+                {% elif order.status == 'shipped' %}
+                <span class="badge" style="background: #2196f3;">📦 Отправлено</span>
+                {% elif order.status == 'delivered' %}
+                <span class="badge badge-success">✓ Доставлено</span>
+                {% else %}
+                <span class="badge badge-danger">✗ Отменено</span>
+                {% endif %}
+            </td>
+            <td>₸ {{ order.total_price }}</td>
+            <td>
+                {% if order.is_paid %}
+                <span class="badge badge-success">✓ Да</span>
+                {% else %}
+                <span class="badge badge-danger">✗ Нет</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'order_detail' order_id=order.id %}" class="btn btn-small">Просмотр</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color: #999;">У вас нет заказов.</p>
+{% endif %}
 {% endblock %}
