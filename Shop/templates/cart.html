@@ -71,7 +71,10 @@
                         <td style="text-align: right; font-size: 18px;"><strong>₽ {{ total }}</strong></td>
                     </tr>
                 </table>
-                <button class="btn" style="width: 100%; margin-top: 20px;">Оформить заказ</button>
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Оформить заказ</button>
+                </form>
             </div>
         </div>
     {% else %}

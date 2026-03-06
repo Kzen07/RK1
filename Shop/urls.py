@@ -13,6 +13,8 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/update/<int:item_id>/', views.update_cart, name='update_cart'),
     
+    path('checkout/', views.checkout_view, name='checkout'),
+    
     # Категории
     path('categories/', views.categories_list, name='categories_list'),
     path('category/<str:category_slug>/', views.category_detail, name='category_detail'),

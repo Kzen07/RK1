@@ -163,6 +163,32 @@ def update_cart(request, item_id):
 	return redirect('cart')
 
 
+def checkout_view(request):
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	cart = get_object_or_404(Cart, user=request.user)
+	items = cart.items.select_related('product').all()
+
+	if not items.exists():
+		return redirect('cart')
+
+	total = cart.get_total()
+	order = Order.objects.create(user=request.user, total_price=total, status='pending')
+
+	for item in items:
+		OrderItem.objects.create(
+			order=order,
+			product=item.product,
+			quantity=item.quantity,
+			price=item.product.price,
+		)
+
+	cart.items.all().delete()
+
+	return redirect('order_detail', order_id=order.id)
+
+
 def login_view(request):
 	if request.user.is_authenticated:
 		return redirect('catalog')
